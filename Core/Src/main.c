@@ -22,12 +22,12 @@
 #include "dma.h"
 #include "spi.h"
 #include "tim.h"
-#include "usb_device.h"
+#include "usb_otg.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "BMI088driver.h"
+#include "robot.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -60,7 +60,7 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-fp32 gyro[3], accel[3], temp;
+
 /* USER CODE END 0 */
 
 /**
@@ -95,9 +95,7 @@ int main(void)
   MX_SPI2_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-  while (BMI088_init()) {
-      ;
-  }
+  RobotInit();
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */

@@ -36,7 +36,7 @@ static void IMU_Param_Correction(IMU_Param_t *param, float gyro[3], float accel[
 
 static void IMUPWMSet(uint16_t pwm)
 {
-    __HAL_TIM_SetCompare(&htim10, TIM_CHANNEL_1, pwm);
+    __HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_2, pwm);
 }
 
 /**
@@ -82,9 +82,9 @@ attitude_t *INS_Init(void)
     else
         return (attitude_t *)&INS.Gyro;
 
-    HAL_TIM_PWM_Start(&htim10, TIM_CHANNEL_1);
+    HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
 
-    while (BMI088Init(&hspi1, 1) != BMI088_NO_ERROR)
+    while (BMI088Init(&hspi2, 1) != BMI088_NO_ERROR)
         ;
     IMU_Param.scale[X] = 1;
     IMU_Param.scale[Y] = 1;
@@ -238,12 +238,12 @@ static void IMU_Param_Correction(IMU_Param_t *param, float gyro[3], float accel[
     if (fabsf(param->Yaw - lastYawOffset) > 0.001f ||
         fabsf(param->Pitch - lastPitchOffset) > 0.001f ||
         fabsf(param->Roll - lastRollOffset) > 0.001f || param->flag) {
-        cosYaw   = arm_cos_f32(param->Yaw / 57.295779513f);
-        cosPitch = arm_cos_f32(param->Pitch / 57.295779513f);
-        cosRoll  = arm_cos_f32(param->Roll / 57.295779513f);
-        sinYaw   = arm_sin_f32(param->Yaw / 57.295779513f);
-        sinPitch = arm_sin_f32(param->Pitch / 57.295779513f);
-        sinRoll  = arm_sin_f32(param->Roll / 57.295779513f);
+        cosYaw   = cosf(param->Yaw / 57.295779513f);
+        cosPitch = cosf(param->Pitch / 57.295779513f);
+        cosRoll  = cosf(param->Roll / 57.295779513f);
+        sinYaw   = cosf(param->Yaw / 57.295779513f);
+        sinPitch = cosf(param->Pitch / 57.295779513f);
+        sinRoll  = cosf(param->Roll / 57.295779513f);
 
         // 1.yaw(alpha) 2.pitch(beta) 3.roll(gamma)
         c_11        = cosYaw * cosRoll + sinYaw * sinPitch * sinRoll;
